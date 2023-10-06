@@ -205,6 +205,8 @@ pub unsafe fn is_format_supported(
             waveformatex_ptr,
             Some(closest_waveformatex_ptr),
         );
+        // slippi change: hoping that adding a log here will give us some idea as to why it failed
+        tracing::info!("got result from client.IsFormatSupported: {:?}", result);
         // `IsFormatSupported` can return `S_FALSE` (which means that a compatible format
         // has been found, but not an exact match) so we also treat this as unsupported.
         match result {
@@ -235,7 +237,11 @@ pub unsafe fn is_format_supported(
                 closest_waveformatextensible_ptr as *mut Audio::WAVEFORMATEX;
             is_supported(waveformatex_ptr, &mut closest_waveformatex_ptr as *mut _)
         }
-        _ => Ok(false),
+        // slippi change
+        unknown => {
+            tracing::error!("did not find a matching format tag: {}", unknown);
+            Ok(false)
+        }
     }
 }
 

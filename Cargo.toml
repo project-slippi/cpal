@@ -14,6 +14,9 @@ oboe-shared-stdcxx = ["oboe/shared-stdcxx"] # Only available on Android. See REA
 
 [dependencies]
 dasp_sample = "0.11"
+# We disable the "attributes" feature as we don't currently need it and it brings
+# in extra dependencies.
+tracing = { version = "0.1", default-features = false, features = ["std"] }
 
 [dev-dependencies]
 anyhow = "1.0"
